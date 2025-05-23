@@ -1,0 +1,7 @@
+FROM ghcr.io/make87/python3_cuda-dev:latest
+
+COPY . .
+
+RUN pip install -e .
+
+ENTRYPOINT ["python3", "app/main.py"]

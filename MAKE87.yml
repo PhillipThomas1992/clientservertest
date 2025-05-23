@@ -1,6 +1,56 @@
-build_kit:
-  name: python3
-  version: latest
-outbound_topics:
-  - name: HELLO_WORLD_MESSAGE
-    message_type: make87_messages.text.text_plain.PlainText
+version: 1
+build:
+  build_kit:
+    name: python3
+    platforms: [linux/arm64, linux/amd64]
+dev_build:
+  build_kit:
+    name: python3
+    platforms: [linux/arm64, linux/amd64]
+interfaces:
+  - name: ollama-client
+    protocol: http
+    default_port:
+      name: http-client
+      protocol: TCP
+      target_port: 8081
+    clients:
+      - name: ollama
+        spec:
+          string: ollama/v1
+        config:
+          type: object
+          properties:
+            field_a:
+              type: string
+              default: a
+              description: some field a
+          required: [field_a]
+  - name: ollama-server
+    protocol: http
+    default_port:
+      name: server-tcp
+      protocol: TCP
+      target_port: 8082
+    servers:
+      - name: ollama
+        spec:
+          string: ollama/v1
+
+peripheral_requirements: []
+container_config: {}
+config: {}
+variants:
+  gpu:
+    build:
+      build_kit:
+        name: python3_cuda
+        platforms: [linux/amd64]
+    dev_build:
+      custom:
+        target:
+          dockerfile: Dockerfile.dev
+          platforms: [linux/amd64]
+    peripheral_requirements:
+      - peripheral_type: GPU
+        name: gpu
